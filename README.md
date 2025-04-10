@@ -4,9 +4,9 @@
 This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v2 environment from Gymnasium. The project was developed as part of the TCSS 435 Reinforcement Learning course.
 
 ## Team Members
-- Peter Madin
+- Peter W Madin
 - Andrew Hwang
-- Sopheantih Ny
+- Sopheanith Ny
 - Ken Egawa
 - TBD
 
@@ -54,7 +54,7 @@ For our extension, we implemented [brief description of your chosen extension]. 
 ## Setup and Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/dqn-lunar-lander.git
+git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
 cd dqn-lunar-lander
 
 # Create a virtual environment (optional but recommended)
