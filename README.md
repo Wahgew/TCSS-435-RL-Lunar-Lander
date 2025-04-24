@@ -8,7 +8,7 @@ This repository contains our team's implementation of Deep Q-Networks (DQN) for 
 - Andrew Hwang
 - Sopheanith Ny
 - Ken Egawa
-- TBD
+- Mohammed Al-hamed
 
 ## Project Description
 We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v2 environment. The project also includes an implementation of [Extension Name], which aims to improve upon the vanilla DQN algorithm.
