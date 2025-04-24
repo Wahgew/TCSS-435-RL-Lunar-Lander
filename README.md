@@ -1,7 +1,7 @@
 # Deep Q-Network for Lunar Lander
 
 ## Project Overview
-This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v2 environment from Gymnasium. The project was developed as part of the TCSS 435 Reinforcement Learning course.
+This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v2 environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
 
 ## Team Members
 - Peter W Madin
@@ -17,10 +17,8 @@ We implement a Deep Q-Network (DQN) to train an agent to successfully land a lun
 - LunarLander-v2 from Gymnasium
   - Continuous state space
   - Discrete action space (left, right, thruster)
-
-### Requirements
 - Python 3.10+
-- PyTorch (or TensorFlow)
+- PyTorch 
 - Gymnasium
 - Matplotlib
 - NumPy
