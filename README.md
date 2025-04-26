@@ -1,7 +1,7 @@
 # Deep Q-Network for Lunar Lander
 
 ## Project Overview
-This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v2 environment from Gymnasium. The project was developed as part of the TCSS 435 Reinforcement Learning course.
+This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v2 environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
 
 ## Team Members
 - Peter W Madin
@@ -17,10 +17,8 @@ We implement a Deep Q-Network (DQN) to train an agent to successfully land a lun
 - LunarLander-v2 from Gymnasium
   - Continuous state space
   - Discrete action space (left, right, thruster)
-
-### Requirements
 - Python 3.10+
-- PyTorch (or TensorFlow)
+- PyTorch 
 - Gymnasium
 - Matplotlib
 - NumPy
@@ -57,13 +55,21 @@ For our extension, we implemented [brief description of your chosen extension]. 
 git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
 cd dqn-lunar-lander
 
-# Create a virtual environment (optional but recommended)
+# (Optional) Create and activate a virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install required packages
+pip install gymnasium
+pip install gymnasium[box2d]
 ```
+## Notes
+
+- If installing `gymnasium[box2d]` fails with a wheel build error, you may need to install **SWIG**:
+  ```bash
+  choco install swig -y
+- If you do not have Chocolatey installed (`choco` command not found), you will need to install it first.
+You can find the installation guide here: https://chocolatey.org/install
 
 ## Usage
 To train the agent:
