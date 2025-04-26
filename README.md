@@ -55,13 +55,21 @@ For our extension, we implemented [brief description of your chosen extension]. 
 git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
 cd dqn-lunar-lander
 
-# Create a virtual environment (optional but recommended)
+# (Optional) Create and activate a virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install required packages
+pip install gymnasium
+pip install gymnasium[box2d]
 ```
+## Notes
+
+- If installing `gymnasium[box2d]` fails with a wheel build error, you may need to install **SWIG**:
+  ```bash
+  choco install swig -y
+- If you do not have Chocolatey installed (`choco` command not found), you will need to install it first.
+You can find the installation guide here: https://chocolatey.org/install
 
 ## Usage
 To train the agent:
