@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-env = gym.make("CartPole-v1")
+env = gym.make("LunarLander-v2")
 
 # set up matplotlib
 is_ipython = 'inline' in matplotlib.get_backend()
