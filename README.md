@@ -11,10 +11,10 @@ This repository contains our team's implementation of Deep Q-Networks (DQN) for 
 - Mohammed Al-hamed
 
 ## Project Description
-We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v2 environment. The project also includes an implementation of [Extension Name], which aims to improve upon the vanilla DQN algorithm.
+We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v3 environment. The project also includes an implementation of [Extension Name], which aims to improve upon the vanilla DQN algorithm.
 
 ### Environment
-- LunarLander-v2 from Gymnasium
+- LunarLander-v3 from Gymnasium
   - Continuous state space
   - Discrete action space (left, right, thruster)
 - Python 3.10+
