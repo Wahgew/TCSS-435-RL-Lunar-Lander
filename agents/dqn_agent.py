@@ -1,11 +1,11 @@
 # agents/dqn_agent.py
-from typing import   Optional
+from typing import Optional
 import numpy as np
 import random
-import math
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
+import time  # Added for timing. tell us how long its running
 
 from networks.q_network import QNetwork
 from utils.replay_buffer import ReplayBuffer
@@ -13,12 +13,12 @@ from utils.replay_buffer import ReplayBuffer
 
 class DQNAgent:
     """
-    DQN Agent based on the PyTorch tutorial, adapted for Lunar Lander.
+    DQN Agent based on the PyTorch tutorial, adapted and optimized for Lunar Lander.
 
     This agent implements the core DQN algorithm with:
     - Two networks (policy and target) for stable learning
     - Experience replay for decorrelating samples
-    - Epsilon-greedy exploration
+    - Epsilon-greedy exploration with linear decay
     - Soft target network updates
     """
 
@@ -27,32 +27,32 @@ class DQNAgent:
             state_size: int,
             action_size: int,
             device: torch.device,
-            buffer_size: int = 10000,
-            batch_size: int = 128,
+            buffer_size: int = 100000,  # Increased from 10000
+            batch_size: int = 64,  # Decreased from 128
             gamma: float = 0.99,
-            tau: float = 0.005,
-            lr: float = 1e-4,
+            tau: float = 1e-3,  # Decreased from 0.005
+            lr: float = 5e-4,  # Increased from 1e-4
             update_every: int = 4,
-            eps_start: float = 0.9,
-            eps_end: float = 0.05,
-            eps_decay: float = 1000
+            eps_start: float = 1.0,  # Increased from 0.9
+            eps_end: float = 0.01,  # Decreased from 0.05
+            eps_decay: float = 0.995  # Changed from 1000 to multiplicative decay
     ) -> None:
         """
-        Initialize a DQN Agent object.
+        Initialize a DQN Agent object with optimized hyperparameters for Lunar Lander.
 
         Args:
             state_size: Dimension of each state
             action_size: Dimension of each action
             device: Device to run the model on
-            buffer_size: Replay memory size
-            batch_size: Minibatch size
+            buffer_size: Replay memory size (larger for more stable learning)
+            batch_size: Minibatch size (smaller for more frequent updates)
             gamma: Discount factor
-            tau: Soft update parameter
-            lr: Learning rate
+            tau: Soft update parameter (smaller for more stable target updates)
+            lr: Learning rate (increased for faster learning)
             update_every: How often to update the target network
-            eps_start: Starting value of epsilon
-            eps_end: Minimum value of epsilon
-            eps_decay: Decay rate of epsilon
+            eps_start: Starting value of epsilon (higher for more initial exploration)
+            eps_end: Minimum value of epsilon (lower for more exploitation)
+            eps_decay: Multiplicative decay factor for epsilon per episode
         """
         self.state_size = state_size
         self.action_size = action_size
@@ -73,7 +73,7 @@ class DQNAgent:
         self.target_net = QNetwork(state_size, action_size).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
 
-        # Using AdamW optimizer with amsgrad as in the PyTorch example
+        # Using AdamW optimizer with amsgrad
         self.optimizer = optim.AdamW(self.policy_net.parameters(), lr=lr, amsgrad=True)
 
         # Replay memory
@@ -81,6 +81,9 @@ class DQNAgent:
 
         # Initialize time step (for updating every update_every steps)
         self.t_step = 0
+
+        # For timing
+        self.start_time = time.time()
 
     def step(self, state: np.ndarray, action: int, reward: float, next_state: np.ndarray, done: bool) -> None:
         """
@@ -110,7 +113,7 @@ class DQNAgent:
 
     def act(self, state: np.ndarray, eps: Optional[float] = None) -> int:
         """
-        Select an action using epsilon-greedy policy.
+        Select an action using epsilon-greedy policy with linear decay.
 
         Args:
             state: Current state
@@ -124,18 +127,15 @@ class DQNAgent:
 
         # Calculate epsilon threshold
         if eps is None:
-            # Use internal epsilon with exponential decay
-            sample = random.random()
-            eps_threshold = self.eps_end + (self.eps_start - self.eps_end) * \
-                            math.exp(-1. * self.steps_done / self.eps_decay)
+            # Use internal epsilon with multiplicative decay
+            eps_threshold = max(self.eps_end, self.eps_start)
             self.steps_done += 1
         else:
             # Use provided epsilon
-            sample = random.random()
             eps_threshold = eps
 
         # Epsilon-greedy action selection
-        if sample > eps_threshold:
+        if random.random() > eps_threshold:
             # Exploit: choose best action
             with torch.no_grad():
                 return self.policy_net(state).max(1)[1].item()
@@ -143,11 +143,20 @@ class DQNAgent:
             # Explore: choose random action
             return random.randrange(self.action_size)
 
+    def update_epsilon(self) -> None:
+        """Update epsilon after each episode using multiplicative decay."""
+        self.eps_start = max(self.eps_end, self.eps_decay * self.eps_start)
+
     def _learn(self) -> None:
         """
         Update policy network using a batch of experiences from memory.
 
-        Follows the DQN update rule with MSE loss and gradient descent.
+        This implements the standard DQN update rule:
+        1. Sample a batch of transitions from memory
+        2. Compute current Q-values and target Q-values
+        3. Compute loss as MSE between current and target Q-values
+        4. Update policy network with gradient descent
+        5. Soft update target network
         """
         if len(self.memory) < self.batch_size:
             return
@@ -166,16 +175,16 @@ class DQNAgent:
             # Set V(s) = 0 for terminal states
             next_state_values = next_state_values * (1 - dones)
 
-        # Compute the expected Q values
+        # Compute the expected Q values - Bellman equation
         expected_state_action_values = rewards + (self.gamma * next_state_values)
 
         # Compute loss using MSE
         loss = F.mse_loss(state_action_values, expected_state_action_values)
 
-        # Optimize the model
+        # Optimize the model with gradient descent
         self.optimizer.zero_grad()
         loss.backward()
-        # In-place gradient clipping (as in PyTorch example)
+        # In-place gradient clipping to prevent exploding gradients
         torch.nn.utils.clip_grad_value_(self.policy_net.parameters(), 100)
         self.optimizer.step()
 
@@ -186,6 +195,8 @@ class DQNAgent:
         """
         Soft update of the target network parameters.
         θ_target = τ*θ_policy + (1 - τ)*θ_target
+
+        This slowly updates the target network, making learning more stable.
         """
         with torch.no_grad():
             for target_param, policy_param in zip(self.target_net.parameters(), self.policy_net.parameters()):
@@ -209,3 +220,7 @@ class DQNAgent:
         """
         self.policy_net.load_state_dict(torch.load(filepath))
         self.target_net.load_state_dict(torch.load(filepath))
+
+    def get_training_time(self) -> float:
+        """Return the elapsed training time in seconds."""
+        return time.time() - self.start_time
