@@ -73,7 +73,7 @@ def train(
 
             if done:
                 # Check success (landing between flags with low velocity)
-                success = terminated and reward > 100
+                success = terminated and not truncated and total_reward > 100
                 break
 
         # Update epsilon after each episode
