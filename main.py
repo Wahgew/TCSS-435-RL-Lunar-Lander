@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import time
 from typing import Dict, Any
 from agents.dqn_agent import DQNAgent
+from agents.double_dqn_agent import DoubleDQNAgent  
 from utils.train_logger import TrainLogger
 from datetime import datetime, timedelta
 
@@ -144,21 +145,39 @@ def main() -> None:
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # Create agent
-    agent = DQNAgent(
-        state_size=state_size,
-        action_size=action_size,
-        device=device,
-        buffer_size=args.buffer_size,
-        batch_size=args.batch_size,
-        gamma=args.gamma,
-        tau=args.tau,
-        lr=args.lr,
-        update_every=args.update_every,
-        eps_start=args.eps_start,
-        eps_end=args.eps_end,
-        eps_decay=args.eps_decay
-    )
+    # Create agent based on type
+    if args.agent_type == "dqn":
+        print("Creating DQN Agent...")
+        agent = DQNAgent(
+            state_size=state_size,
+            action_size=action_size,
+            device=device,
+            buffer_size=args.buffer_size,
+            batch_size=args.batch_size,
+            gamma=args.gamma,
+            tau=args.tau,
+            lr=args.lr,
+            update_every=args.update_every,
+            eps_start=args.eps_start,
+            eps_end=args.eps_end,
+            eps_decay=args.eps_decay
+        )
+    else:  # double_dqn
+        print("Creating Double DQN Agent...")
+        agent = DoubleDQNAgent(
+            state_size=state_size,
+            action_size=action_size,
+            device=device,
+            buffer_size=args.buffer_size,
+            batch_size=args.batch_size,
+            gamma=args.gamma,
+            tau=args.tau,
+            lr=args.lr,
+            update_every=args.update_every,
+            eps_start=args.eps_start,
+            eps_end=args.eps_end,
+            eps_decay=args.eps_decay
+        )
 
     # Train agent
     results = train(
@@ -176,6 +195,8 @@ def main() -> None:
 
     # Close environment
     env.close()
+    
+    plt.close('all')
 
     # Try to display the final plots
     try:
