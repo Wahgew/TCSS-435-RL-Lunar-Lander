@@ -11,7 +11,7 @@ This repository contains our team's implementation of Deep Q-Networks (DQN) for 
 - Mohammed Al-hamed
 
 ## Project Description
-We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v3 environment. The project also includes an implementation of [Extension Name], which aims to improve upon the vanilla DQN algorithm.
+We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v3 environment. The project also includes an implementation of Double DQN, which aims to improve upon the vanilla DQN algorithm.
 
 ### Environment
 - LunarLander-v3 from Gymnasium
@@ -46,8 +46,9 @@ Our implementation includes:
 - Epsilon-greedy exploration
 - Online training loop
 
-## Extension: [Double DQN]
-For our extension, we implemented [brief description of your chosen extension]. This extension aims to [explain how it improves the vanilla DQN].
+## Extension: [Double DQN](https://arxiv.org/abs/1509.06461)
+For our extension, we implemented Double DQN, comparing it to our standard DQN implementation. This extension aims to reduce the impact of overestimations from the standard DQN algorithm through using different networks, 
+online to select the best action and target to evaluate the actions value, this is in comparison to standard DQN, which uses the same network to select and evaluate.
 
 ## Setup and Installation
 ```bash
