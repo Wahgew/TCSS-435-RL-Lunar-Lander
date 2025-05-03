@@ -1,72 +1,13 @@
-# main.py
 import os
 import torch
 import gymnasium as gym
 import argparse
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 import time
 from typing import Dict, Any
-
 from agents.dqn_agent import DQNAgent
 from utils.train_logger import TrainLogger
-
-
-def train(
-        env: gym.Env,
-        agent: DQNAgent,
-        n_episodes: int = 1000,  # Increased from 1000
-        max_t: int = 1000,
-        output_dir: str = "results",
-) -> Dict[str, Any]:
-    """
-    Train the DQN agent.
-
-    Args:
-        env: Environment
-        agent: Agent to train
-        n_episodes: Maximum number of training episodes (increased for better learning)
-        max_t: Maximum number of timesteps per episode
-        output_dir: Directory to save outputs
-
-    Returns:
-        Dictionary with training metrics
-    """
-    logger = TrainLogger()
-    episode_rewards = []
-
-    # Record start time
-    start_time = time.time()
-
-    # Create output directory
-    os.makedirs(output_dir, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_dir = os.path.join(output_dir, f"run_{timestamp}")
-    os.makedirs(run_dir, exist_ok=True)
-
-    print("\nTraining DQN agent...")
-    print(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-    for i_episode in range(1, n_episodes + 1):
-        # Reset environment
-        state, _ = env.reset()
-        total_reward = 0
-        returns = 0
-        success = False
-        gamma_t = 1.0  # For calculating return (discounted reward)
-
-        # Episode loop
-        for t in range(max_t):
-            # Select and perform an action
-            action = agent.act(state)
-            next_state, reward, terminated, truncated, info = env.step(action)
-            done = terminated or truncated
 from datetime import datetime, timedelta
-import time
-from typing import Dict, Any
-
-from agents.dqn_agent import DQNAgent
-from utils.train_logger import TrainLogger
 
 
 def train(
