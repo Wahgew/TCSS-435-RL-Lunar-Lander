@@ -246,7 +246,8 @@ def main() -> None:
         logger.plot_comparison(
             os.path.join(dqn_results["run_dir"], "training_log.csv"),
             os.path.join(double_dqn_results["run_dir"], "training_log.csv"),
-            comparison_path
+            comparison_path,
+            show_plot = False
         )
 
         print(f"\nComparison plot saved to: {comparison_path}")
@@ -304,7 +305,7 @@ def main() -> None:
                                        f"comparison_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
 
         logger = TrainLogger()
-        logger.plot_comparison(dqn_csv, double_dqn_csv, comparison_path)
+        logger.plot_comparison(dqn_csv, double_dqn_csv, comparison_path, show_plot=False)
 
         print(f"Comparison plot saved to: {comparison_path}")
 

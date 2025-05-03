@@ -187,7 +187,7 @@ class TrainLogger:
             'success_rate': np.mean(recent_successes) * 100
         }
 
-    def plot_comparison(self, csv_path1: str, csv_path2: str, save_path: Optional[str] = None) -> None:
+    def plot_comparison(self, csv_path1: str, csv_path2: str, save_path: Optional[str] = None, show_plot: bool = False) -> None:
         """
         Create comparison plots for two different agents (DQN and Double DQN).
 
@@ -249,9 +249,12 @@ class TrainLogger:
         plt.tight_layout()
 
         # Save or display the figure
-        if save_path:
+        if show_plot:
+            plt.show()
+        elif save_path:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             plt.savefig(save_path)
             print(f"Comparison plots saved to {save_path}")
+            plt.close()  # Close the figure to avoid displaying it
         else:
             plt.show()
