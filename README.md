@@ -72,7 +72,7 @@ To train the agent (plots + statistics on completion):
 ```bash
 python main.py --agent_type dqn
 python main.py --agent_type double_dqn
-python main,py --run_both
+python main.py --run_both
 ```
 
 
