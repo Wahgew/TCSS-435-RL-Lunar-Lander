@@ -178,8 +178,8 @@ class DQNAgent:
         # Compute the expected Q values - Bellman equation
         expected_state_action_values = rewards + (self.gamma * next_state_values)
 
-        # Compute loss using MSE
-        loss = F.mse_loss(state_action_values, expected_state_action_values)
+        # Compute loss using Huber loss
+        loss = F.smooth_l1_loss(state_action_values, expected_state_action_values)
 
         # Optimize the model with gradient descent
         self.optimizer.zero_grad()
