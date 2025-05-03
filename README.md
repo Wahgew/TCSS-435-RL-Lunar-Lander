@@ -56,8 +56,12 @@ online to select the best action and target to evaluate the actions value, this 
 git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
 
 # Install required packages
-pip install gymnasium
-pip install gymnasium[box2d]
+All Packages: pip install torch matplotlib numpy pandas "gymnasium[box2d]"
+- pip install torch
+- pip install matplotlib
+- pip install numpy
+- pip install pandas
+- pip install gymnasium[box2d]
 ```
 ## Notes
 
@@ -70,9 +74,14 @@ You can find the installation guide here: https://chocolatey.org/install
 ## Usage
 To train the agent (plots + statistics on completion):
 ```bash
+# Train and run DQN agent.
 python main.py --agent_type dqn
+
+#Train and run double DQN agent.
 python main.py --agent_type double_dqn
-python main,py --run_both
+
+#Train and run both DQN and double DQN sequentially.
+python main.py --run_both
 ```
 
 
