@@ -131,6 +131,8 @@ def main() -> None:
     parser.add_argument("--eps_end", type=float, default=0.01, help="Minimum epsilon")
     parser.add_argument("--eps_decay", type=float, default=0.995, help="Epsilon decay factor")
     parser.add_argument("--output_dir", type=str, default="results", help="Output directory")
+    parser.add_argument("--agent_type", type=str, default="dqn", choices=["dqn", "double_dqn"], 
+                        help="Type of agent to use (dqn or double_dqn)")
     args = parser.parse_args()
 
     # Create environment
