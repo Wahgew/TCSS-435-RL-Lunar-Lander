@@ -1,7 +1,7 @@
 # Deep Q-Network for Lunar Lander
 
 ## Project Overview
-This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v2 environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
+This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v3 environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
 
 ## Team Members
 - Peter W Madin
@@ -46,7 +46,7 @@ Our implementation includes:
 - Epsilon-greedy exploration
 - Online training loop
 
-## Extension: [Extension Name]
+## Extension: [Double DQN]
 For our extension, we implemented [brief description of your chosen extension]. This extension aims to [explain how it improves the vanilla DQN].
 
 ## Setup and Installation
