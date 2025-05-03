@@ -17,6 +17,7 @@ def train(
         n_episodes: int = 2000,  # Increased from 1000
         max_t: int = 1000,
         output_dir: str = "results",
+        agent_type: str = "DQN"
 ) -> Dict[str, Any]:
     """
     Train the DQN agent.
@@ -40,7 +41,7 @@ def train(
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_dir = os.path.join(output_dir, f"run_{timestamp}")
+    run_dir = os.path.join(output_dir, f"{agent_type}_{timestamp}")
     os.makedirs(run_dir, exist_ok=True)
 
     print("\nTraining DQN agent...")
@@ -134,81 +135,174 @@ def main() -> None:
     parser.add_argument("--output_dir", type=str, default="results", help="Output directory")
     parser.add_argument("--agent_type", type=str, default="dqn", choices=["dqn", "double_dqn"], 
                         help="Type of agent to use (dqn or double_dqn)")
-    args = parser.parse_args()
 
-    # Create environment
-    env = gym.make("LunarLander-v3", render_mode=None)  # No rendering during training
-    state_size = env.observation_space.shape[0]
-    action_size = env.action_space.n
+    # Comparison only arguments
+    parser.add_argument("--compare", action="store_true", help="Compare DQN and Double DQN performance")
+    parser.add_argument("--dqn_path", type=str, help="Path to DQN CSV log")
+    parser.add_argument("--double_dqn_path", type=str, help="Path to Double DQN CSV log")
+    parser.add_argument("--compare_output", type=str, default="results/comparison", help="Path to save comparison plot")
+
+    # Run both agents for comparison
+    parser.add_argument("--run_both", action="store_true",
+                        help="Run both DQN and Double DQN and create comparison")
+
+    args = parser.parse_args()
 
     # Set up device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # Create agent based on type
-    if args.agent_type == "dqn":
-        print("Creating DQN Agent...")
-        agent = DQNAgent(
-            state_size=state_size,
-            action_size=action_size,
-            device=device,
-            buffer_size=args.buffer_size,
-            batch_size=args.batch_size,
-            gamma=args.gamma,
-            tau=args.tau,
-            lr=args.lr,
-            update_every=args.update_every,
-            eps_start=args.eps_start,
-            eps_end=args.eps_end,
-            eps_decay=args.eps_decay
+    # Set up environment parameters
+    env = gym.make("LunarLander-v3", render_mode=None)  # No rendering during training
+    state_size = env.observation_space.shape[0]
+    action_size = env.action_space.n
+    env.close()  # Close initial environment
+
+    # Helper function to create and train an agent
+    def create_and_train_agent(agent_type):
+        """Create and train an agent of the specified type."""
+        if agent_type == "dqn":
+            print("\n=== Creating DQN Agent ===")
+            agent = DQNAgent(
+                state_size=state_size,
+                action_size=action_size,
+                device=device,
+                buffer_size=args.buffer_size,
+                batch_size=args.batch_size,
+                gamma=args.gamma,
+                tau=args.tau,
+                lr=args.lr,
+                update_every=args.update_every,
+                eps_start=args.eps_start,
+                eps_end=args.eps_end,
+                eps_decay=args.eps_decay
+            )
+        else:  # double_dqn
+            print("\n=== Creating Double DQN Agent ===")
+            agent = DoubleDQNAgent(
+                state_size=state_size,
+                action_size=action_size,
+                device=device,
+                buffer_size=args.buffer_size,
+                batch_size=args.batch_size,
+                gamma=args.gamma,
+                tau=args.tau,
+                lr=args.lr,
+                update_every=args.update_every,
+                eps_start=args.eps_start,
+                eps_end=args.eps_end,
+                eps_decay=args.eps_decay
+            )
+
+        # Create fresh environment for training
+        training_env = gym.make("LunarLander-v3", render_mode=None)
+
+        # Train agent
+        results = train(
+            env=training_env,
+            agent=agent,
+            n_episodes=args.episodes,
+            output_dir=args.output_dir,
+            agent_type=agent_type.upper()
         )
-    else:  # double_dqn
-        print("Creating Double DQN Agent...")
-        agent = DoubleDQNAgent(
-            state_size=state_size,
-            action_size=action_size,
-            device=device,
-            buffer_size=args.buffer_size,
-            batch_size=args.batch_size,
-            gamma=args.gamma,
-            tau=args.tau,
-            lr=args.lr,
-            update_every=args.update_every,
-            eps_start=args.eps_start,
-            eps_end=args.eps_end,
-            eps_decay=args.eps_decay
+
+        # Close environment after training
+        training_env.close()
+
+        print(f"\nTraining complete for {agent_type.upper()}!")
+        print(f"Results saved to: {results['run_dir']}")
+        print(f"Final average score: {results['final_avg_score']:.2f}")
+        print(f"Final success rate: {results['final_success_rate']:.2f}%")
+        print(f"Total training time: {results['training_time']}")
+
+        return results
+
+    # Handle all the different modes
+    if args.run_both:
+        # Run both agents and compare
+        dqn_results = create_and_train_agent("dqn")
+        double_dqn_results = create_and_train_agent("double_dqn")
+
+        # Create comparison plots
+        os.makedirs(args.compare_output, exist_ok=True)
+        comparison_path = os.path.join(args.compare_output,
+                                       f"comparison_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+
+        from utils.train_logger import TrainLogger
+        logger = TrainLogger()
+        logger.plot_comparison(
+            os.path.join(dqn_results["run_dir"], "training_log.csv"),
+            os.path.join(double_dqn_results["run_dir"], "training_log.csv"),
+            comparison_path
         )
 
-    # Train agent
-    results = train(
-        env=env,
-        agent=agent,
-        n_episodes=args.episodes,
-        output_dir=args.output_dir,
-    )
+        print(f"\nComparison plot saved to: {comparison_path}")
 
-    print(f"\nTraining complete!")
-    print(f"Results saved to: {results['run_dir']}")
-    print(f"Final average score: {results['final_avg_score']:.2f}")
-    print(f"Final success rate: {results['final_success_rate']:.2f}%")
-    print(f"Total training time: {results['training_time']}")
+        # Create a summary table
+        print("\nSummary of performance over last 100 episodes:")
+        print("Metric               | DQN (Vanilla)     | DQN + Double     ")
+        print("---------------------|-------------------|------------------")
+        print(
+            f"Average Episodic Reward | {dqn_results['final_avg_score']:.2f}              | {double_dqn_results['final_avg_score']:.2f}             ")
+        print(
+            f"Success Rate (%)        | {dqn_results['final_success_rate']:.2f}%             | {double_dqn_results['final_success_rate']:.2f}%            ")
 
-    # Close environment
-    env.close()
-    
-    plt.close('all')
+        # Try to display the comparison plot
+        try:
+            if os.path.exists(comparison_path):
+                img = plt.imread(comparison_path)
+                plt.figure(figsize=(12, 18))
+                plt.imshow(img)
+                plt.axis('off')
+                plt.show()
+        except Exception as e:
+            print(f"Could not display comparison plot: {e}")
 
-    # Try to display the final plots
-    try:
-        plot_path = os.path.join(results['run_dir'], "training_plot.png")
-        if os.path.exists(plot_path):
-            img = plt.imread(plot_path)
-            plt.figure(figsize=(10, 15))
-            plt.imshow(img)
-            plt.axis('off')
-            plt.show()
-    except Exception as e:
-        print(f"Could not display plot: {e}")
+    elif args.compare:
+        # Compare existing results
+        from utils.train_logger import TrainLogger
+
+        if args.dqn_path and args.double_dqn_path:
+            # Use provided paths
+            dqn_csv = args.dqn_path
+            double_dqn_csv = args.double_dqn_path
+        else:
+            # Find the most recent DQN and Double DQN results
+            result_dirs = [d for d in os.listdir("results") if os.path.isdir(os.path.join("results", d))]
+
+            dqn_dirs = sorted([d for d in result_dirs if d.startswith("DQN_")], reverse=True)
+            double_dqn_dirs = sorted([d for d in result_dirs if d.startswith("DOUBLE_DQN_")], reverse=True)
+
+            if not dqn_dirs or not double_dqn_dirs:
+                print("Error: Could not find both DQN and Double DQN results. Run both types first.")
+                return
+
+            dqn_csv = os.path.join("results", dqn_dirs[0], "training_log.csv")
+            double_dqn_csv = os.path.join("results", double_dqn_dirs[0], "training_log.csv")
+
+        # Create comparison plots
+        os.makedirs(args.compare_output, exist_ok=True)
+        comparison_path = os.path.join(args.compare_output,
+                                       f"comparison_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+
+        logger = TrainLogger()
+        logger.plot_comparison(dqn_csv, double_dqn_csv, comparison_path)
+
+        print(f"Comparison plot saved to: {comparison_path}")
+
+        # Try to display the comparison plot
+        try:
+            if os.path.exists(comparison_path):
+                img = plt.imread(comparison_path)
+                plt.figure(figsize=(12, 18))
+                plt.imshow(img)
+                plt.axis('off')
+                plt.show()
+        except Exception as e:
+            print(f"Could not display comparison plot: {e}")
+    else:
+        # Run a single agent (DQN or Double DQN)
+        create_and_train_agent(args.agent_type)
 
 
 if __name__ == "__main__":

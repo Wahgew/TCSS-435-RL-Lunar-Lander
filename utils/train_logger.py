@@ -186,3 +186,72 @@ class TrainLogger:
             'avg_return': np.mean(recent_returns),
             'success_rate': np.mean(recent_successes) * 100
         }
+
+    def plot_comparison(self, csv_path1: str, csv_path2: str, save_path: Optional[str] = None) -> None:
+        """
+        Create comparison plots for two different agents (DQN and Double DQN).
+
+        Args:
+            csv_path1: Path to first agent's CSV results
+            csv_path2: Path to second agent's CSV results
+            save_path: Path to save the comparison plot
+        """
+        # Load data from CSV files
+        df1 = pd.read_csv(csv_path1)
+        df2 = pd.read_csv(csv_path2)
+
+        # Determine agent names from file paths
+        agent1_name = os.path.dirname(csv_path1).split(os.sep)[-1].split("_")[0]
+        agent2_name = os.path.dirname(csv_path2).split(os.sep)[-1].split("_")[0]
+
+        # Create a figure with three subplots
+        fig, axes = plt.subplots(3, 1, figsize=(12, 18))
+
+        # Plot 1: Episodic Reward vs. Episode Number
+        axes[0].plot(df1['episode'], df1['score'], alpha=0.3, color='blue', label=f'Per Episode ({agent1_name})')
+        axes[0].plot(df1['episode'], df1['avg_score'], color='blue', label=f'Moving Avg ({agent1_name})')
+        axes[0].plot(df2['episode'], df2['score'], alpha=0.3, color='red', label=f'Per Episode ({agent2_name})')
+        axes[0].plot(df2['episode'], df2['avg_score'], color='red', label=f'Moving Avg ({agent2_name})')
+        axes[0].set_xlabel('Episode')
+        axes[0].set_ylabel('Score')
+        axes[0].set_title('Episodic Reward vs. Episode Number')
+        axes[0].grid(True)
+        axes[0].legend()
+
+        # Plot 2: Episodic Return vs. Episode Number
+        axes[1].plot(df1['episode'], df1['return'], alpha=0.3, color='green', label=f'Per Episode ({agent1_name})')
+        axes[1].plot(df1['episode'], df1['avg_return'], color='green', label=f'Moving Avg ({agent1_name})')
+        axes[1].plot(df2['episode'], df2['return'], alpha=0.3, color='orange', label=f'Per Episode ({agent2_name})')
+        axes[1].plot(df2['episode'], df2['avg_return'], color='orange', label=f'Moving Avg ({agent2_name})')
+        axes[1].set_xlabel('Episode')
+        axes[1].set_ylabel('Return')
+        axes[1].set_title('Episodic Return vs. Episode Number')
+        axes[1].grid(True)
+        axes[1].legend()
+
+        # Plot 3: Success Rate over Time
+        axes[2].plot(df1['episode'], df1['success'].astype(int), 'o', alpha=0.3, color='purple',
+                     label=f'Success (0/1) {agent1_name}')
+        axes[2].plot(df1['episode'], df1['success_rate'] / 100, color='purple',
+                     label=f'Success Rate {agent1_name}')
+        axes[2].plot(df2['episode'], df2['success'].astype(int), 'o', alpha=0.3, color='brown',
+                     label=f'Success (0/1) {agent2_name}')
+        axes[2].plot(df2['episode'], df2['success_rate'] / 100, color='brown',
+                     label=f'Success Rate {agent2_name}')
+        axes[2].set_xlabel('Episode')
+        axes[2].set_ylabel('Success')
+        axes[2].set_title('Success Rate over Time')
+        axes[2].set_ylim([-0.1, 1.1])
+        axes[2].grid(True)
+        axes[2].legend()
+
+        # Adjust spacing between subplots
+        plt.tight_layout()
+
+        # Save or display the figure
+        if save_path:
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            plt.savefig(save_path)
+            print(f"Comparison plots saved to {save_path}")
+        else:
+            plt.show()
