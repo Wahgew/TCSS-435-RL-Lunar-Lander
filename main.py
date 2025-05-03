@@ -113,14 +113,27 @@ def train(
     return {
         "episodes": i_episode,
         "final_avg_score": metrics['avg_score'],
+        "final_avg_return": metrics["avg_return"],
         "final_success_rate": metrics['success_rate'],
         "run_dir": run_dir,
         "training_time": total_time_str
     }
 
 
+
 def main() -> None:
     """Main function to set up and run DQN training."""
+
+    """
+    Usage:
+    
+    Train vanilla DQN: python main.py --agent_type dqn
+    Train Double DQN: python main.py --agent_type double_dqn
+    Run both and compare: python main.py --run_both
+    Compare existing results: python main.py --compare
+    Compare specific results: python main.py --compare --dqn_path results/DQN_xxx/training_log.csv --double_dqn_path results/DOUBLE_DQN_yyy/training_log.csv
+    """
+
     parser = argparse.ArgumentParser(description="Train a DQN agent on LunarLander-v3")
     parser.add_argument("--episodes", type=int, default=1000, help="Number of episodes to train")
     parser.add_argument("--buffer_size", type=int, default=100000, help="Replay buffer size")
@@ -239,13 +252,18 @@ def main() -> None:
         print(f"\nComparison plot saved to: {comparison_path}")
 
         # Create a summary table
+        # Create a summary table with better formatting
         print("\nSummary of performance over last 100 episodes:")
-        print("Metric               | DQN (Vanilla)     | DQN + Double     ")
-        print("---------------------|-------------------|------------------")
+        print("+--------------------------+-------------------+-------------------+")
+        print("| Metric                   | DQN (Vanilla)     | DQN + Double      |")
+        print("+--------------------------+-------------------+-------------------+")
         print(
-            f"Average Episodic Reward | {dqn_results['final_avg_score']:.2f}              | {double_dqn_results['final_avg_score']:.2f}             ")
+            f"| Average Episodic Reward | {dqn_results['final_avg_score']:<17.2f} | {double_dqn_results['final_avg_score']:<17.2f} |")
         print(
-            f"Success Rate (%)        | {dqn_results['final_success_rate']:.2f}%             | {double_dqn_results['final_success_rate']:.2f}%            ")
+            f"| Average Return          | {dqn_results['final_avg_return']:<17.2f} | {double_dqn_results['final_avg_return']:<17.2f} |")
+        print(
+            f"| Success Rate (%)        | {dqn_results['final_success_rate']:<16.2f}% | {double_dqn_results['final_success_rate']:<16.2f}% |")
+        print("+--------------------------+-------------------+-------------------+")
 
         # Try to display the comparison plot
         try:
