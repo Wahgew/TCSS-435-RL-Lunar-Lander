@@ -53,11 +53,6 @@ For our extension, we implemented [brief description of your chosen extension]. 
 ```bash
 # Clone the repository
 git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
-cd dqn-lunar-lander
-
-# (Optional) Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install required packages
 pip install gymnasium
@@ -72,23 +67,21 @@ pip install gymnasium[box2d]
 You can find the installation guide here: https://chocolatey.org/install
 
 ## Usage
-To train the agent:
+To train the agent (plots + statistics on completion):
 ```bash
-python main.py --mode train --agent [vanilla_dqn/extension_dqn] --episodes 1000
+python main.py --agent_type dqn
+python main.py --agent_type double_dqn
+python main,py --run_both
 ```
 
-To evaluate a trained agent:
-```bash
-python main.py --mode evaluate --agent [vanilla_dqn/extension_dqn] --model path/to/model
-```
 
 ## Results
 [This section will be updated with training results, performance metrics, and comparative analysis between vanilla DQN and our extension]
 
 ## References
 - [Original DQN Paper](https://www.nature.com/articles/nature14236)
-- [Extension Paper]
-- [Any other relevant references]
+- [Pytorch Reinforcement Learning (DQN) Tutorial](https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html)
+- [Extension Paper](https://arxiv.org/abs/1509.06461)
 
 ## License
 [Add your license information here]
