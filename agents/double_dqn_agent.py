@@ -22,7 +22,7 @@ class DoubleDQNAgent(DQNAgent):
     - The target network evaluates that action
     """
 
-    def __init__(
+    def __init__( 
             self,
             state_size: int,
             action_size: int,
@@ -30,12 +30,12 @@ class DoubleDQNAgent(DQNAgent):
             buffer_size: int = 100000,
             batch_size: int = 64,
             gamma: float = 0.99,
-            tau: float = 2e-3,  # Slightly higher tau for faster target updates
-            lr: float = 8e-4,  # Slightly higher learning rate
+            tau: float = 1e-3, 
+            lr: float = 5e-4, 
             update_every: int = 4,
             eps_start: float = 1.0,
             eps_end: float = 0.01,
-            eps_decay: float = 0.992  # Faster epsilon decay
+            eps_decay: float = 0.995  
     ) -> None:
         """
         Initialize a Double DQN Agent with optimized hyperparameters.

@@ -26,15 +26,15 @@ class DQNAgent:
             state_size: int,
             action_size: int,
             device: torch.device,
-            buffer_size: int = 100000,  # Increased from 10000
-            batch_size: int = 64,  # Decreased from 128
+            buffer_size: int = 100000, 
+            batch_size: int = 64,  
             gamma: float = 0.99,
-            tau: float = 1e-3,  # Decreased from 0.005
-            lr: float = 5e-4,  # Increased from 1e-4
+            tau: float = 1e-3, 
+            lr: float = 5e-4,  
             update_every: int = 4,
-            eps_start: float = 1.0,  # Increased from 0.9
-            eps_end: float = 0.01,  # Decreased from 0.05
-            eps_decay: float = 0.995  # Changed from 1000 to multiplicative decay
+            eps_start: float = 1.0, 
+            eps_end: float = 0.01, 
+            eps_decay: float = 0.995  # multiplicative decay
     ) -> None:
         """
         Initialize a DQN Agent object with optimized hyperparameters for Lunar Lander.
@@ -153,7 +153,7 @@ class DQNAgent:
         This implements the standard DQN update rule:
         1. Sample a batch of transitions from memory
         2. Compute current Q-values and target Q-values
-        3. Compute loss as MSE between current and target Q-values
+        3. Compute loss as Huber loss between current and target Q-values
         4. Update policy network with gradient descent
         5. Soft update target network
         """
