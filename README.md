@@ -11,7 +11,7 @@ This repository contains our team's implementation of Deep Q-Networks (DQN) for 
 - Mohammed Al-hamed
 
 ## Project Description
-We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v3 environment. The project also includes an implementation of [Extension Name], which aims to improve upon the vanilla DQN algorithm.
+We implement a Deep Q-Network (DQN) to train an agent to successfully land a lunar module in the LunarLander-v3 environment. The project also includes an implementation of Double DQN, which aims to improve upon the vanilla DQN algorithm.
 
 ### Environment
 - LunarLander-v3 from Gymnasium
@@ -46,18 +46,14 @@ Our implementation includes:
 - Epsilon-greedy exploration
 - Online training loop
 
-## Extension: [Double DQN]
-For our extension, we implemented [brief description of your chosen extension]. This extension aims to [explain how it improves the vanilla DQN].
+## Extension: [Double DQN](https://arxiv.org/abs/1509.06461)
+For our extension, we implemented Double DQN, comparing it to our standard DQN implementation. This extension aims to reduce the impact of overestimations from the standard DQN algorithm through using different networks, 
+online to select the best action and target to evaluate the actions value, this is in comparison to standard DQN, which uses the same network to select and evaluate.
 
 ## Setup and Installation
 ```bash
 # Clone the repository
 git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
-cd dqn-lunar-lander
-
-# (Optional) Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install required packages
 pip install gymnasium
@@ -72,23 +68,21 @@ pip install gymnasium[box2d]
 You can find the installation guide here: https://chocolatey.org/install
 
 ## Usage
-To train the agent:
+To train the agent (plots + statistics on completion):
 ```bash
-python main.py --mode train --agent [vanilla_dqn/extension_dqn] --episodes 1000
+python main.py --agent_type dqn
+python main.py --agent_type double_dqn
+python main,py --run_both
 ```
 
-To evaluate a trained agent:
-```bash
-python main.py --mode evaluate --agent [vanilla_dqn/extension_dqn] --model path/to/model
-```
 
 ## Results
 [This section will be updated with training results, performance metrics, and comparative analysis between vanilla DQN and our extension]
 
 ## References
 - [Original DQN Paper](https://www.nature.com/articles/nature14236)
-- [Extension Paper]
-- [Any other relevant references]
+- [Pytorch Reinforcement Learning (DQN) Tutorial](https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html)
+- [Extension Paper](https://arxiv.org/abs/1509.06461)
 
 ## License
 [Add your license information here]
