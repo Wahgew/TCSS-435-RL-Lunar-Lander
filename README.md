@@ -92,6 +92,7 @@ python main.py --run_both
 - [Original DQN Paper](https://www.nature.com/articles/nature14236)
 - [Pytorch Reinforcement Learning (DQN) Tutorial](https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html)
 - [Extension Paper](https://arxiv.org/abs/1509.06461)
+- [Reproducibility Pytorch](https://pytorch.org/docs/stable/notes/randomness.html)
 
 ## License
 [Add your license information here]
