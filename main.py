@@ -156,7 +156,7 @@ def main() -> None:
     parser.add_argument("--output_dir", type=str, default="results", help="Output directory")
     parser.add_argument("--agent_type", type=str, default="dqn", choices=["dqn", "double_dqn"], 
                         help="Type of agent to use (dqn or double_dqn)")
-    parser.add_argument("--seed", type=int, default=None, help="Seed for reproducibility")
+    parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility")
 
     # Comparison only arguments
     parser.add_argument("--compare", action="store_true", help="Compare DQN and Double DQN performance")
