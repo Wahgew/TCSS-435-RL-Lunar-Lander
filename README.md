@@ -1,7 +1,7 @@
 # Deep Q-Network for Lunar Lander
 
 ## Project Overview
-This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v3 environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
+This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the [LunarLander-v3](https://gymnasium.farama.org/environments/box2d/lunar_lander/) environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
 
 ## Team Members
 - Peter W Madin
@@ -56,8 +56,12 @@ online to select the best action and target to evaluate the actions value, this 
 git clone https://github.com/Wahgew/TCSS-435-RL-Lunar-Lander.git
 
 # Install required packages
-pip install gymnasium
-pip install gymnasium[box2d]
+All Packages: pip install torch matplotlib numpy pandas "gymnasium[box2d]"
+- pip install torch
+- pip install matplotlib
+- pip install numpy
+- pip install pandas
+- pip install gymnasium[box2d]
 ```
 ## Notes
 
@@ -70,8 +74,13 @@ You can find the installation guide here: https://chocolatey.org/install
 ## Usage
 To train the agent (plots + statistics on completion):
 ```bash
+# Train and run DQN agent.
 python main.py --agent_type dqn
+
+#Train and run double DQN agent.
 python main.py --agent_type double_dqn
+
+#Train and run both DQN and double DQN sequentially.
 python main.py --run_both
 ```
 
