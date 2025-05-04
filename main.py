@@ -121,7 +121,7 @@ def train(
         "training_time": total_time_str
     }
 
-def set_seed(seed=42):
+def set_seed(seed=123):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
