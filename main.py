@@ -4,6 +4,8 @@ import gymnasium as gym
 import argparse
 import matplotlib.pyplot as plt
 import time
+import numpy as np
+import random
 from typing import Dict, Any
 from agents.dqn_agent import DQNAgent
 from agents.double_dqn_agent import DoubleDQNAgent  
@@ -119,7 +121,13 @@ def train(
         "training_time": total_time_str
     }
 
-
+def set_seed(seed=42):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 def main() -> None:
     """Main function to set up and run DQN training."""
@@ -148,6 +156,7 @@ def main() -> None:
     parser.add_argument("--output_dir", type=str, default="results", help="Output directory")
     parser.add_argument("--agent_type", type=str, default="dqn", choices=["dqn", "double_dqn"], 
                         help="Type of agent to use (dqn or double_dqn)")
+    parser.add_argument("--seed", type=int, default=None, help="Seed for reproducibility")
 
     # Comparison only arguments
     parser.add_argument("--compare", action="store_true", help="Compare DQN and Double DQN performance")
@@ -160,6 +169,11 @@ def main() -> None:
                         help="Run both DQN and Double DQN and create comparison")
 
     args = parser.parse_args()
+
+    # Set the seed if provided
+    if args.seed is not None:
+        print(f"Setting random seed to {args.seed}")
+        set_seed(args.seed)
 
     # Set up device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -208,7 +222,13 @@ def main() -> None:
             )
 
         # Create fresh environment for training
-        training_env = gym.make("LunarLander-v3", render_mode=None)
+        if args.seed is not None:
+            training_env = gym.make("LunarLander-v3", render_mode=None)
+            training_env.reset(seed=args.seed)
+            training_env.action_space.seed(args.seed)
+            training_env.observation_space.seed(args.seed)
+        else:
+            training_env = gym.make("LunarLander-v3", render_mode=None)
 
         # Train agent
         results = train(
@@ -232,8 +252,26 @@ def main() -> None:
 
     # Handle all the different modes
     if args.run_both:
+
+        if args.seed is not None:
+            # Save states
+            torch_state = torch.get_rng_state()
+            torch_cuda_state = torch.cuda.get_rng_state() if torch.cuda.is_available() else None
+            np_state = np.random.get_state()
+            random_state = random.getstate()
+        
         # Run both agents and compare
         dqn_results = create_and_train_agent("dqn")
+
+        if args.seed is not None:
+            print(f"\nResetting random seed to {args.seed} for Double DQN training")
+            # Restore states
+            torch.set_rng_state(torch_state)
+            if torch_cuda_state is not None:
+                torch.cuda.set_rng_state(torch_cuda_state)
+            np.random.set_state(np_state)
+            random.setstate(random_state)
+        
         double_dqn_results = create_and_train_agent("double_dqn")
 
         # Create comparison plots
@@ -265,6 +303,8 @@ def main() -> None:
         print(
             f"| Success Rate (%)        | {dqn_results['final_success_rate']:<16.2f}% | {double_dqn_results['final_success_rate']:<16.2f}% |")
         print("+--------------------------+-------------------+-------------------+")
+        if args.seed is not None:
+            print(f"Runs both used seed: ({args.seed})")
 
         # Try to display the comparison plot
         try:
