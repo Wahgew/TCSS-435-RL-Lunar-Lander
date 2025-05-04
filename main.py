@@ -178,6 +178,7 @@ def main() -> None:
     # Set up device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
+    print(f"CUDA device: {torch.cuda.get_device_name(0)}")
 
     # Set up environment parameters
     env = gym.make("LunarLander-v3", render_mode=None)  # No rendering during training
@@ -317,6 +318,28 @@ def main() -> None:
         except Exception as e:
             print(f"Could not display comparison plot: {e}")
 
+        print("\n=== Rendering Agent Performances ===")
+
+        # Render DQN agent
+        dqn_video_path = render_agent_performance(
+            "DQN",
+            os.path.join(dqn_results["run_dir"], "final_model.pth"),
+            args.output_dir
+        )
+
+        # Render Double DQN agent
+        double_dqn_video_path = render_agent_performance(
+            "DOUBLE_DQN",
+            os.path.join(double_dqn_results["run_dir"], "final_model.pth"),
+            args.output_dir
+        )
+
+        print("\nTo view the videos, check the following paths:")
+        if dqn_video_path:
+            print(f"DQN Agent: {dqn_video_path}")
+        if double_dqn_video_path:
+            print(f"Double DQN Agent: {double_dqn_video_path}")
+
     elif args.compare:
         # Compare existing results
         from utils.train_logger import TrainLogger
@@ -361,8 +384,97 @@ def main() -> None:
             print(f"Could not display comparison plot: {e}")
     else:
         # Run a single agent (DQN or Double DQN)
-        create_and_train_agent(args.agent_type)
+        results = create_and_train_agent(args.agent_type)
 
+        # Render video for single agent mode
+        print("\n=== Rendering Agent Performance ===")
+        video_path = render_agent_performance(
+            args.agent_type.upper(),
+            os.path.join(results["run_dir"], "final_model.pth"),
+            args.output_dir
+        )
+
+        print("\nTo view the video, check the following path:")
+        if video_path:
+            print(f"{args.agent_type.upper()} Agent: {video_path}")
+
+def render_agent_performance(agent_type: str, model_path: str, output_dir: str) -> str:
+    """
+    Render and save a video of an agent's performance.
+
+    Args:
+        agent_type: Type of agent ("DQN" or "DOUBLE_DQN")
+        model_path: Path to the trained model weights
+        output_dir: Directory to save the video
+
+    Returns:
+        Path to the saved video file
+    """
+    import base64
+    import io
+    from gymnasium.wrappers import RecordVideo
+
+    # Create output directory
+    video_dir = os.path.join(output_dir, f"{agent_type}_video")
+    os.makedirs(video_dir, exist_ok=True)
+
+    # Create environment with rendering
+    env = gym.make("LunarLander-v3", render_mode="rgb_array")
+    env = RecordVideo(
+        env,
+        video_dir,
+        episode_trigger=lambda x: True,  # Record every episode
+        name_prefix=f"{agent_type.lower()}_agent"
+    )
+
+    # Create the appropriate agent
+    state_size = env.observation_space.shape[0]
+    action_size = env.action_space.n
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    if agent_type == "DQN":
+        agent = DQNAgent(
+            state_size=state_size,
+            action_size=action_size,
+            device=device
+        )
+    else:  # DOUBLE_DQN
+        agent = DoubleDQNAgent(
+            state_size=state_size,
+            action_size=action_size,
+            device=device
+        )
+
+    # Load trained weights
+    agent.load(model_path)
+
+    # Run the episode
+    state, _ = env.reset()
+    total_reward = 0
+    done = False
+
+    print(f"\nRendering {agent_type} agent performance...")
+    while not done:
+        action = agent.act(state, eps=0.0)  # No exploration, just exploitation
+        next_state, reward, terminated, truncated, _ = env.step(action)
+        done = terminated or truncated
+        total_reward += reward
+        state = next_state
+
+    print(f"{agent_type} agent achieved a score of: {total_reward:.2f}")
+
+    # Close the environment
+    env.close()
+
+    # Find the video file
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('.mp4')]
+    if video_files:
+        latest_video = os.path.join(video_dir, video_files[-1])
+        print(f"Video saved to: {latest_video}")
+        return latest_video
+
+    print("No video was generated")
+    return ""
 
 if __name__ == "__main__":
     main()
