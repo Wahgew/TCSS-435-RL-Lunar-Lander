@@ -1,7 +1,7 @@
 # Deep Q-Network for Lunar Lander
 
 ## Project Overview
-This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the LunarLander-v3 environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
+This repository contains our team's implementation of Deep Q-Networks (DQN) for solving the [LunarLander-v3](https://gymnasium.farama.org/environments/box2d/lunar_lander/) environment from Gymnasium. The project was developed as a project from TCSS 435: Artificial Intelligence And Knowledge Acquisition.
 
 ## Team Members
 - Peter W Madin
