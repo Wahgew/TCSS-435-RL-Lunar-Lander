@@ -82,10 +82,14 @@ python main.py --agent_type double_dqn
 
 #Train and run both DQN and double DQN sequentially.
 python main.py --run_both
+
+# Use arg parameter below to specify a seed, default is None.
+--seed
 ```
 
 
-## Results
+## Results 
+Trained on python main.py --run_both --seed 123
 [This section will be updated with training results, performance metrics, and comparative analysis between vanilla DQN and our extension]
 
 ## References
