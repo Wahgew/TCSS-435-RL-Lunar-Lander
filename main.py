@@ -170,6 +170,11 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    # Set the seed if provided
+    if args.seed is not None:
+        print(f"Setting random seed to {args.seed}")
+        set_seed(args.seed)
+
     # Set up device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -217,7 +222,13 @@ def main() -> None:
             )
 
         # Create fresh environment for training
-        training_env = gym.make("LunarLander-v3", render_mode=None)
+        if args.seed is not None:
+            training_env = gym.make("LunarLander-v3", render_mode=None)
+            training_env.reset(seed=args.seed)
+            training_env.action_space.seed(args.seed)
+            training_env.observation_space.seed(args.seed)
+        else:
+            training_env = gym.make("LunarLander-v3", render_mode=None)
 
         # Train agent
         results = train(
