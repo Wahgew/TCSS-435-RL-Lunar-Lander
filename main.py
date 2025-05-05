@@ -26,7 +26,7 @@ def train(
     Args:
         env: Environment
         agent: Agent to train
-        n_episodes: Maximum number of training episodes (increased for better learning)
+        n_episodes: Maximum number of training episodes 
         max_t: Maximum number of timesteps per episode
         output_dir: Directory to save outputs
     Returns:
@@ -72,8 +72,8 @@ def train(
             gamma_t *= agent.gamma
 
             if done:
-                # Check success (landing between flags with low velocity)
-                success = terminated and not truncated and total_reward > 100
+                # Check success (An episode is considered a solution if it scores at least 200 points.)
+                success = terminated and not truncated and total_reward > 200
                 break
 
         # Update epsilon after each episode
@@ -165,7 +165,7 @@ def main() -> None:
     parser.add_argument("--double_dqn_path", type=str, help="Path to Double DQN CSV log")
     parser.add_argument("--compare_output", type=str, default="results/comparison", help="Path to save comparison plot")
 
-    # Run both agents for comparison
+    # Run both agents for comparison argument
     parser.add_argument("--run_both", action="store_true",
                         help="Run both DQN and Double DQN and create comparison")
 
@@ -181,7 +181,7 @@ def main() -> None:
     print(f"Using device: {device}")
 
     # Set up environment parameters
-    env = gym.make("LunarLander-v3", render_mode=None)  # No rendering during training
+    env = gym.make("LunarLander-v3", render_mode=None) 
     state_size = env.observation_space.shape[0]
     action_size = env.action_space.n
     env.close()  # Close initial environment
@@ -292,7 +292,6 @@ def main() -> None:
         print(f"\nComparison plot saved to: {comparison_path}")
 
         # Create a summary table
-        # Create a summary table with better formatting
         print("\nSummary of performance over last 100 episodes:")
         print("+--------------------------+-------------------+-------------------+")
         print("| Metric                   | DQN (Vanilla)     | DQN + Double      |")

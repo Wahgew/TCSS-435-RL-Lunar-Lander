@@ -70,7 +70,7 @@ class DQNAgent:
         self.target_net = QNetwork(state_size, action_size).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
 
-        # Using AdamW optimizer with amsgrad
+        # Using AdamW optimizer 
         self.optimizer = optim.AdamW(self.policy_net.parameters(), lr=lr, amsgrad=True)
 
         # Replay memory

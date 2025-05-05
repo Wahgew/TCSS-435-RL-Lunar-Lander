@@ -45,8 +45,8 @@ class DoubleDQNAgent(DQNAgent):
             buffer_size: Replay memory size
             batch_size: Minibatch size
             gamma: Discount factor
-            tau: Soft update parameter (higher for faster target updates)
-            lr: Learning rate (higher for faster learning)
+            tau: Soft update parameter 
+            lr: Learning rate 
             update_every: How often to update the target network
             eps_start: Starting value of epsilon
             eps_end: Minimum value of epsilon
@@ -58,12 +58,12 @@ class DoubleDQNAgent(DQNAgent):
             gamma, tau, lr, update_every, eps_start, eps_end, eps_decay
         )
         
-        # Using AdamW optimizer with slightly different parameters
+        # Using AdamW optimizer 
         self.optimizer = optim.AdamW(
             self.policy_net.parameters(), 
             lr=lr, 
             amsgrad=True,
-            weight_decay=1e-5  # Small weight decay to prevent overfitting
+            weight_decay=1e-5  
         )
 
     def _learn(self) -> None:
@@ -99,13 +99,12 @@ class DoubleDQNAgent(DQNAgent):
         expected_state_action_values = rewards + (self.gamma * next_state_values)
 
         # Compute Huber loss instead of MSE - more robust to outliers
-        # This can help stabilize training
         loss = F.smooth_l1_loss(state_action_values, expected_state_action_values)
 
         # Optimize the model with gradient descent
         self.optimizer.zero_grad()
         loss.backward()
-        # In-place gradient clipping to prevent exploding gradients - slightly higher threshold
+        # In-place gradient clipping to prevent exploding gradients 
         torch.nn.utils.clip_grad_value_(self.policy_net.parameters(), 10)
         self.optimizer.step()
 
