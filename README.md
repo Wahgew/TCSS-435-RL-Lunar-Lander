@@ -84,7 +84,7 @@ python main.py --run_both
 ## Results 
 Trained on python main.py --run_both --seed 123
 
-![Training Performance Comparison](https://github.com/user-attachments/assets/27920c8e-1719-46bf-acc5-f26fca9689dd)
+![Training Performance Comparison](https://github.com/user-attachments/assets/a6ffaf96-c68e-4d65-bf68-168900efaaac)
 
 The graph above shows the comparison of training performance between DQN and Double DQN algorithms. The results demonstrate that Double DQN reaches stable performance faster and achieves higher average rewards over time compared to standard DQN.
 
@@ -105,4 +105,4 @@ The Double DQN agent shows improved stability and efficiency in landing the luna
 - [Reproducibility Pytorch](https://pytorch.org/docs/stable/notes/randomness.html)
 
 ## License
-Copyright (c) 2025 Peter Wahyudianto Madin, Andrew Hwang, Sopheanith Ny, Ken Egawa, Mohammed Al-hamed
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
