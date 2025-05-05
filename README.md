@@ -105,4 +105,4 @@ The Double DQN agent shows improved stability and efficiency in landing the luna
 - [Reproducibility Pytorch](https://pytorch.org/docs/stable/notes/randomness.html)
 
 ## License
-[Add your license information here]
+Copyright (c) 2025 Peter Wahyudianto Madin, Andrew Hwang, Sopheanith Ny, Ken Egawa, Mohammed Al-hamed
