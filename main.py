@@ -122,6 +122,12 @@ def train(
     }
 
 def set_seed(seed=123):
+    """
+    Sets random seeds for reproducibility across multiple libraries.
+
+    Args:
+        seed (int, optional): The random seed value. Defaults to 123.
+    """
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
