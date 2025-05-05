@@ -7,7 +7,6 @@ import os
 class TrainLogger:
     """
     Logger for tracking, recording, and visualizing training metrics.
-
     This class is specifically designed to fulfill the requirements of Part 3
     of the assignment, which requires tracking and comparing:
     - Total episodic reward
@@ -34,7 +33,6 @@ class TrainLogger:
                     window_size: int = 100) -> Dict[str, float]:
         """
         Record metrics for a completed episode and calculate moving averages.
-
         Args:
             episode: Current episode number
             score: Total reward received in the episode
@@ -77,12 +75,10 @@ class TrainLogger:
     def plot_training(self, save_path: Optional[str] = None) -> None:
         """
         Generate the required plots for Part 3 of the assignment.
-
         Creates three plots as specified in the assignment:
         1. Episodic Reward vs. Episode Number
         2. Episodic Return vs. Episode Number
         3. Success Rate over Time
-
         Args:
             save_path: Path to save the plot; if None, the plot is displayed
         """
@@ -132,9 +128,7 @@ class TrainLogger:
     def save_to_csv(self, filepath: str) -> None:
         """
         Save all training metrics to a CSV file for further analysis.
-
         This data can be used to create the summary table required in Part 3.
-
         Args:
             filepath: Path where the CSV file will be saved
         """
@@ -159,13 +153,10 @@ class TrainLogger:
     def get_final_metrics(self, num_episodes: int = 100) -> Dict[str, float]:
         """
         Get average metrics over the last N episodes.
-
         This is useful for generating the summary table required in Part 3,
         which asks for metrics averaged over the last 100 episodes.
-
         Args:
             num_episodes: Number of recent episodes to average over (default: 100)
-
         Returns:
             Dictionary with average metrics over the specified number of episodes
         """
@@ -190,7 +181,6 @@ class TrainLogger:
     def plot_comparison(self, csv_path1: str, csv_path2: str, save_path: Optional[str] = None, show_plot: bool = False) -> None:
         """
         Create comparison plots for two different agents (DQN and Double DQN).
-
         Args:
             csv_path1: Path to first agent's CSV results
             csv_path2: Path to second agent's CSV results

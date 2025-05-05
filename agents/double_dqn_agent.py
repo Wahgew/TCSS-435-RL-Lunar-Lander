@@ -15,7 +15,6 @@ from agents.dqn_agent import DQNAgent
 class DoubleDQNAgent(DQNAgent):
     """
     Double DQN Agent that inherits from the base DQNAgent.
-    
     Double DQN addresses the overestimation bias in regular DQN by decoupling
     action selection and action evaluation:
     - The online network selects the best action
@@ -39,7 +38,6 @@ class DoubleDQNAgent(DQNAgent):
     ) -> None:
         """
         Initialize a Double DQN Agent with optimized hyperparameters.
-        
         Args:
             state_size: Dimension of each state
             action_size: Dimension of each action
@@ -71,7 +69,6 @@ class DoubleDQNAgent(DQNAgent):
     def _learn(self) -> None:
         """
         Update policy network using a batch of experiences from memory.
-        
         This implements the Double DQN update rule with some optimizations:
         1. Use online network to select actions, target network to evaluate
         2. Add gradient clipping to stabilize learning

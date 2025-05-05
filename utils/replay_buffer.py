@@ -7,18 +7,15 @@ from collections import namedtuple, deque
 # Define a transition tuple similar to PyTorch example
 Transition = namedtuple('Transition', ('state', 'action', 'next_state', 'reward', 'done'))
 
-
 class ReplayBuffer:
     """
     Fixed-size buffer to store experience tuples.
-
     Based on the ReplayMemory class from the PyTorch tutorial.
     """
 
     def __init__(self, capacity: int, batch_size: int, device: torch.device) -> None:
         """
         Initialize a ReplayBuffer object.
-
         Args:
             capacity: Maximum size of buffer
             batch_size: Size of each training batch
@@ -32,7 +29,6 @@ class ReplayBuffer:
              reward: torch.Tensor, done: torch.Tensor) -> None:
         """
         Add a new experience to memory.
-
         Args:
             state: Current state
             action: Action taken
@@ -45,7 +41,6 @@ class ReplayBuffer:
     def sample(self) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Randomly sample a batch of experiences from memory.
-
         Returns:
             Tuple of (states, actions, next_states, rewards, dones)
         """

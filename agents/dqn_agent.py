@@ -13,7 +13,6 @@ from utils.replay_buffer import ReplayBuffer
 class DQNAgent:
     """
     DQN Agent based on the PyTorch tutorial, adapted and optimized for Lunar Lander.
-
     This agent implements the core DQN algorithm with:
     - Two networks (policy and target) for stable learning
     - Experience replay for decorrelating samples
@@ -38,7 +37,6 @@ class DQNAgent:
     ) -> None:
         """
         Initialize a DQN Agent object with optimized hyperparameters for Lunar Lander.
-
         Args:
             state_size: Dimension of each state
             action_size: Dimension of each action
@@ -87,7 +85,6 @@ class DQNAgent:
     def step(self, state: np.ndarray, action: int, reward: float, next_state: np.ndarray, done: bool) -> None:
         """
         Process a step in the environment by storing experience and learning if appropriate.
-
         Args:
             state: Current state
             action: Action taken
@@ -113,11 +110,9 @@ class DQNAgent:
     def act(self, state: np.ndarray, eps: Optional[float] = None) -> int:
         """
         Select an action using epsilon-greedy policy with linear decay.
-
         Args:
             state: Current state
             eps: Optional epsilon override, if None uses internal epsilon schedule
-
         Returns:
             Selected action
         """
@@ -149,7 +144,6 @@ class DQNAgent:
     def _learn(self) -> None:
         """
         Update policy network using a batch of experiences from memory.
-
         This implements the standard DQN update rule:
         1. Sample a batch of transitions from memory
         2. Compute current Q-values and target Q-values
@@ -194,7 +188,6 @@ class DQNAgent:
         """
         Soft update of the target network parameters.
         θ_target = τ*θ_policy + (1 - τ)*θ_target
-
         This slowly updates the target network, making learning more stable.
         """
         with torch.no_grad():
@@ -204,7 +197,6 @@ class DQNAgent:
     def save(self, filepath: str) -> None:
         """
         Save the policy network to a file.
-
         Args:
             filepath: Path to save the model
         """
@@ -213,7 +205,6 @@ class DQNAgent:
     def load(self, filepath: str) -> None:
         """
         Load a saved model into both policy and target networks.
-
         Args:
             filepath: Path to load the model from
         """

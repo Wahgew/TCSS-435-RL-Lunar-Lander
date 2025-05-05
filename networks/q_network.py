@@ -6,7 +6,6 @@ import torch.nn.functional as F
 class QNetwork(nn.Module):
     """
     Neural network for approximating Q-values.
-
     Based on the DQN architecture from the PyTorch tutorial,
     but with larger hidden layers for the more complex Lunar Lander environment.
     """
@@ -14,7 +13,6 @@ class QNetwork(nn.Module):
     def __init__(self, state_size: int, action_size: int) -> None:
         """
         Initialize the Q-Network with a larger architecture than the PyTorch example.
-
         Args:
             state_size: Dimension of each state
             action_size: Dimension of each action
@@ -29,10 +27,8 @@ class QNetwork(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Forward pass through the network.
-
         Args:
             x: State tensor
-
         Returns:
             Q-values for each action
         """

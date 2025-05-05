@@ -23,14 +23,12 @@ def train(
 ) -> Dict[str, Any]:
     """
     Train the DQN agent.
-
     Args:
         env: Environment
         agent: Agent to train
         n_episodes: Maximum number of training episodes (increased for better learning)
         max_t: Maximum number of timesteps per episode
         output_dir: Directory to save outputs
-
     Returns:
         Dictionary with training metrics
     """
@@ -124,7 +122,6 @@ def train(
 def set_seed(seed=123):
     """
     Sets random seeds for reproducibility across multiple libraries.
-
     Args:
         seed (int, optional): The random seed value. Defaults to 123.
     """
@@ -137,10 +134,8 @@ def set_seed(seed=123):
 
 def main() -> None:
     """Main function to set up and run DQN training."""
-
     """
     Usage:
-    
     Train vanilla DQN: python main.py --agent_type dqn
     Train Double DQN: python main.py --agent_type double_dqn
     Run both and compare: python main.py --run_both
